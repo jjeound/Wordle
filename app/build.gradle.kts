@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.dagger.hilt)
+    kotlin("plugin.serialization") version "2.1.21"
 }
 
 android {
@@ -31,8 +35,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            freeCompilerArgs.add("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+        }
     }
     buildFeatures {
         compose = true
@@ -40,7 +48,39 @@ android {
 }
 
 dependencies {
+    // Hilt
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.runtime.livedata)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.okhttp)
+    implementation (libs.logging.interceptor)
+
+    // Room
+    implementation (libs.androidx.room.ktx)
+    ksp (libs.androidx.room.compiler)
+    implementation (libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
